@@ -1,0 +1,49 @@
+{
+  "id": "WallCue",
+  "name": "WallCue",
+  "author": "neon28 / Codex",
+  "version": "0.1.8",
+  "gameVersion": "1.44.1",
+  "description": "Wall warnings, a Wall Hits counter and a fixed-position collision icon. HUD positioning and switches are integrated into Counters+. Beat Saber PC 1.44.1 Solo/Party prototype.",
+  "dependsOn": {
+    "BSIPA": "^4.3.6",
+    "SiraUtil": "^3.3.1",
+    "BeatSaberMarkupLanguage": "^1.14.1",
+    "Counters+": "^2.3.12"
+  },
+  "features": {
+    "CountersPlus.CustomCounter": [
+      {
+        "Name": "Wall Hits",
+        "CounterLocation": "WallCue.WallHitsCounter",
+        "Description": "Unique collided walls. Count turns red for 0.5 seconds after each increase.",
+        "MultiplayerReady": false,
+        "ConfigDefaults": {
+          "Enabled": true,
+          "Position": "BelowCombo",
+          "Distance": 2
+        },
+        "BSML": {
+          "Resource": "WallCue.Resources.CounterSettings.bsml",
+          "Host": "WallCue.CounterOptions"
+        }
+      },
+      {
+        "Name": "Wall Hit Icon",
+        "CounterLocation": "WallCue.WallHitIconCounter",
+        "Description": "Fixed collision icon: 0.1s fade in, 0.3s hold, 0.1s fade out.",
+        "MultiplayerReady": false,
+        "ConfigDefaults": {
+          "Enabled": true,
+          "Position": "AboveHighway",
+          "Distance": 0
+        },
+        "BSML": {
+          "Icon": "WallCue.Resources.square_and_x.png",
+          "Resource": "WallCue.Resources.IconSettings.bsml",
+          "Host": ""
+        }
+      }
+    ]
+  }
+}

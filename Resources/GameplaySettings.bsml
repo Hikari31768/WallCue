@@ -1,0 +1,9 @@
+<bg>
+  <settings-container child-control-width='true' child-expand-width='true' child-control-height='true' child-expand-height='false' child-align='UpperCenter' spacing='1'>
+    <checkbox-setting min-height='7' pref-height='7' flexible-height='0' size-delta-y='7' text='Limit warning distance' value='limit-distance' apply-on-change='true' hover-hint='Off: warn on all spawned approaching walls. On: only warn within the selected forward distance.' />
+    <slider-setting min-height='7' pref-height='7' flexible-height='0' size-delta-y='7' text='Warning distance' value='warning-distance' min='5' max='25' increment='0.1' integer-only='false' show-buttons='true' formatter='format-distance' apply-on-change='true' interactable='~limit-distance' hover-hint='Forward distance from your head to the approaching wall collision bounds, in metres.' />
+    <text min-height='5' pref-height='5' flexible-height='0' size-delta-y='5' text='~distance-status' font-size='3' align='Center' />
+    <slider-setting min-height='7' pref-height='7' flexible-height='0' size-delta-y='7' text='Sensitivity' value='sensitivity' min='0' max='10' increment='1' integer-only='true' show-buttons='true' formatter='format-sensitivity' apply-on-change='true' hover-hint='Extra safety margin for yellow warning and critical cues. Higher values warn with more clearance. Actual hits are unchanged.' />
+    <text min-height='5' pref-height='5' flexible-height='0' size-delta-y='5' text='Higher sensitivity = more clearance' font-size='3' align='Center' />
+  </settings-container>
+</bg>

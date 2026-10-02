@@ -1,0 +1,7 @@
+<vertical spacing='1' horizontal-fit='PreferredSize'>
+  <checkbox-setting text='Wall frame cues' value='enabled' apply-on-change='true'
+    hover-hint='Enable yellow warnings and red collision flashing on walls. Wall Hits and Wall Hit Icon have their own Counters+ switches.'/>
+  <checkbox-setting text='Test: all walls yellow' value='test-yellow' apply-on-change='true'
+    hover-hint='Diagnostic wall colouring only. The counter and icon always use actual collisions.'/>
+  <text text='WallCue 0.1.8 | One count per collided wall' font-size='3'/>
+</vertical>

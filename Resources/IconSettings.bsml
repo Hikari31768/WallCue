@@ -1,0 +1,4 @@
+<vertical spacing='1' horizontal-fit='PreferredSize'>
+  <text text='Fade in 0.1s / Hold 0.3s / Fade out 0.1s' font-size='3'/>
+  <text text='Repeated hits keep the icon at the same position.' font-size='3'/>
+</vertical>

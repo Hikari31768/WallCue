@@ -1,0 +1,24 @@
+# Build output
+out/
+bin/
+obj/
+
+# Visual Studio / IDE
+.vs/
+*.user
+*.suo
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Debug symbols
+*.pdb
+
+# Compiled assemblies
+*.dll
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
