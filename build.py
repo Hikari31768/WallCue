@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Build against your own patched Beat Saber 1.44.1 installation; no NuGet downloads."""
+"""Build against your own patched Beat Saber 1.40.8 installation; no NuGet downloads."""
 import argparse, pathlib, re, subprocess
 ROOT = pathlib.Path(__file__).resolve().parent
 p = argparse.ArgumentParser()
-p.add_argument('--game', type=pathlib.Path, required=True, help='Beat Saber 1.44.1 game directory')
+p.add_argument('--game', type=pathlib.Path, required=True, help='Beat Saber 1.40.8 game directory')
 p.add_argument('--dotnet', default='dotnet', help='.NET SDK 8+ dotnet executable')
 p.add_argument('--sdk-root', type=pathlib.Path, help='Optional exact SDK directory containing Roslyn/bincore/csc.dll')
 a = p.parse_args()

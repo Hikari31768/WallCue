@@ -24,10 +24,13 @@ for name,files in [('Geometry',['src/WarningSettings.cs','src/PluginConfig.cs','
 if a.game:
     managed=a.game.resolve()/'Beat Saber_Data'/'Managed'
     plugins=a.game.resolve()/'Plugins'
-    assembly=out/'Integration.dll'
+    # Keep real plugin integration separate from the Controller suite's SongCore
+    # double, which otherwise shadows the actual SongCore DLL in host probing.
+    integration_out=out/'Integration';integration_out.mkdir(exist_ok=True)
+    assembly=integration_out/'Integration.dll'
     args=[a.dotnet,str(sdk/'Roslyn'/'bincore'/'csc.dll'),'-noconfig','-nostdlib+','-target:exe','-out:'+str(assembly)]
     args+=['-r:'+str(r) for r in ref.glob('*.dll')]
-    args+=['-r:'+str(r) for r in [plugins/'Counters+.dll',managed/'Newtonsoft.Json.dll',managed/'UnityEngine.CoreModule.dll',managed/'Zenject.dll']]
+    args+=['-r:'+str(r) for r in [plugins/'Counters+.dll',managed/'Newtonsoft.Json.dll',managed/'UnityEngine.CoreModule.dll',managed/'Zenject.dll',a.game.resolve()/'Libs'/'Hive.Versioning.dll']]
     args+=[str(root/'tests/IntegrationTests.cs')]
     if subprocess.run(args).returncode:raise SystemExit('Integration test compilation failed.')
     assembly.with_suffix('.runtimeconfig.json').write_text(json.dumps({'runtimeOptions':{'tfm':ref.name,'framework':{'name':'Microsoft.NETCore.App','version':pack.name}}}))

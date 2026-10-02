@@ -1,6 +1,6 @@
 // Uses the user's actual Counters+ and IPA DLLs, but never calls Unity native APIs.
-// Checks the fragile boundary: two features in one manifest, defaults, resources,
-// custom-counter types and the named settings host. Not a game/VR render test.
+// Checks native collision/render fields, loader dependency ranges, two features in
+// one manifest, defaults, resources and settings bindings. Not a game/VR render test.
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,7 +22,8 @@ internal static class IntegrationTests
     static void Check(string name, bool ok) { if (!ok) throw new Exception(name); checks++; }
     public static int Main(string[] args)
     {
-        string[] folders = { Path.GetFullPath(args[0]), Path.GetFullPath(args[1]), Path.GetFullPath(args[2]) };
+        string[] folders = { Path.GetFullPath(args[0]), Path.GetFullPath(args[1]), Path.GetFullPath(args[2]),
+            Path.GetFullPath(Path.Combine(args[1], "..", "Libs")) };
         AssemblyLoadContext.Default.Resolving += (context, name) =>
         {
             foreach (string folder in folders)
@@ -48,6 +49,53 @@ internal static class IntegrationTests
         }
         var manifest = JObject.Parse(Read("WallCue.manifest.json"));
         var ipa = Assembly.LoadFrom(Path.Combine(folders[0], "IPA.Loader.dll"));
+        Check("manifest targets the 1.40.8 branch", (string)manifest["gameVersion"] == "1.40.8");
+        foreach (var dependency in ((JObject)manifest["dependsOn"]).Properties())
+        {
+            string file = dependency.Name == "BSIPA" ? Path.Combine(folders[0], "IPA.Loader.dll") :
+                Path.Combine(folders[1], (dependency.Name == "BeatSaberMarkupLanguage" ? "BSML" : dependency.Name) + ".dll");
+            var assembly = Assembly.LoadFrom(file);
+            string resource = assembly.GetManifestResourceNames().Single(n => n.EndsWith(".manifest.json"));
+            using (var reader = new StreamReader(assembly.GetManifestResourceStream(resource)))
+            {
+                var installed = JObject.Parse(reader.ReadToEnd());
+                var range = new Hive.Versioning.VersionRange((string)dependency.Value);
+                var version = new Hive.Versioning.Version((string)installed["version"]);
+                Check("dependency ID matches: " + dependency.Name, (string)installed["id"] == dependency.Name);
+                Check("actual loader range accepts installed " + dependency.Name + " " + version, range.Matches(version));
+            }
+        }
+        // Compile success cannot catch renamed private fields. Exercise the actual
+        // production lookup against the game's metadata without creating Unity objects.
+        var gameAssemblies = new[] { "Main", "GameplayCore", "HMLib", "HMRendering" }
+            .Select(n => Assembly.LoadFrom(Path.Combine(folders[0], n + ".dll"))).ToArray();
+        Type GameType(string name) => gameAssemblies.Select(a => a.GetType(name)).First(t => t != null);
+        var required = mod.GetType("WallCue.PrivateFields", true).GetMethod("Required", BindingFlags.Static | BindingFlags.NonPublic);
+        FieldInfo NativeField(string type, string name) => (FieldInfo)required.Invoke(null, new object[] { GameType(type), name });
+        Type obstacleType = GameType("ObstacleController");
+        Check("native collision collection implements expected interface",
+            typeof(ICollection<>).MakeGenericType(obstacleType).IsAssignableFrom(
+                NativeField("PlayerHeadAndObstacleInteraction", "_intersectingObstacles").FieldType));
+        Check("native wall exposes stretchable visual", NativeField("ObstacleController", "_stretchableObstacle").FieldType == GameType("StretchableObstacle"));
+        Check("native frame field matches", NativeField("StretchableObstacle", "_obstacleFrame").FieldType == GameType("ParametricBoxFrameController"));
+        Check("native glow field matches", NativeField("StretchableObstacle", "_obstacleFakeGlow").FieldType == GameType("ParametricBoxFakeGlowController"));
+        foreach (string visual in new[] { "ParametricBoxFrameController", "ParametricBoxFakeGlowController" })
+            Check("native property-block field matches: " + visual,
+                NativeField(visual, "_materialPropertyBlockController").FieldType == GameType("MaterialPropertyBlockController"));
+        string songCorePath = Path.Combine(folders[1], "SongCore.dll");
+        if (File.Exists(songCorePath))
+        {
+            var songCore = Assembly.LoadFrom(songCorePath);
+            Type keyType = Assembly.LoadFrom(Path.Combine(folders[0], "DataModels.dll")).GetType("BeatmapKey", true);
+            var lookup = songCore.GetType("SongCore.Collections", true).GetMethod("GetCustomLevelSongDifficultyData",
+                BindingFlags.Public | BindingFlags.Static, null, new[] { keyType }, null);
+            Check("optional SongCore selected-difficulty lookup exists", lookup != null);
+            var extra = lookup.ReturnType.GetField("additionalDifficultyData");
+            Check("optional SongCore difficulty metadata exists", extra != null);
+            foreach (string field in new[] { "_requirements", "_suggestions" })
+                Check("optional SongCore NE declaration exists: " + field,
+                    typeof(IEnumerable<string>).IsAssignableFrom(extra.FieldType.GetField(field).FieldType));
+        }
         var converter = (JsonConverter)Activator.CreateInstance(ipa.GetType("IPA.JsonConverters.FeaturesFieldConverter", true), true);
         var features = JsonConvert.DeserializeObject<Dictionary<string, List<JObject>>>(manifest["features"].ToString(), converter);
         var definitions = features["CountersPlus.CustomCounter"];
@@ -155,7 +203,7 @@ internal static class IntegrationTests
             byte[] header = new byte[8]; icon.Read(header, 0, header.Length);
             Check("PNG embedded", header[0] == 137 && header[1] == 80 && header[2] == 78 && header[3] == 71);
         }
-        Console.WriteLine("PASS: " + checks + " integration checks using actual IPA/Counters+ DLLs (no Unity rendering)");
+        Console.WriteLine("PASS: " + checks + " integration checks using actual game/IPA/plugin DLLs (no Unity rendering)");
         return 0;
     }
 }

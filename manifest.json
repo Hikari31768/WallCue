@@ -3,13 +3,13 @@
   "name": "WallCue",
   "author": "neon28 / Codex",
   "version": "0.1.8",
-  "gameVersion": "1.44.1",
-  "description": "Wall warnings, a Wall Hits counter and a fixed-position collision icon. HUD positioning and switches are integrated into Counters+. Beat Saber PC 1.44.1 Solo/Party prototype.",
+  "gameVersion": "1.40.8",
+  "description": "Wall warnings, a Wall Hits counter and a fixed-position collision icon. HUD positioning and switches are integrated into Counters+. Beat Saber PC 1.40.8 Solo/Party prototype.",
   "dependsOn": {
     "BSIPA": "^4.3.6",
-    "SiraUtil": "^3.3.1",
-    "BeatSaberMarkupLanguage": "^1.14.1",
-    "Counters+": "^2.3.12"
+    "SiraUtil": "^3.2.1",
+    "BeatSaberMarkupLanguage": "^1.12.5",
+    "Counters+": "^2.3.11"
   },
   "features": {
     "CountersPlus.CustomCounter": [

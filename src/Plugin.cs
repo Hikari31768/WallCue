@@ -24,7 +24,7 @@ namespace WallCue
             // Registering it again here prevents the entire menu scene from starting.
             zenjector.Install<GameplaySettingsInstaller>(Location.Menu);
             zenjector.Install<PlayerInstaller>(Location.StandardPlayer);
-            Log.Info("WallCue 0.1.8 / Beat Saber 1.44.1. Counters+: Wall Hits + Wall Hit Icon. Warning distance and sensitivity: song selection / Mods / WallCue.");
+            Log.Info("WallCue 0.1.8 / Beat Saber 1.40.8. Counters+: Wall Hits + Wall Hit Icon. Warning distance and sensitivity: song selection / Mods / WallCue.");
         }
     }
     public class PlayerInstaller : Installer

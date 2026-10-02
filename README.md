@@ -1,6 +1,8 @@
 # WallCue 0.1.8
 
-**适用于 Beat Saber PC 版 1.44.1 · 群内测试版**
+**适用于 Beat Saber PC 版 1.40.8 · 群内测试版**
+
+本分支从 1.44.1 版移植，已使用本地 1.40.8 游戏及依赖完成编译、逻辑测试和 DLL 集成检查。已用 `-vrmode oculus` + `fpfc` 启动并进入普通谱，日志确认设置页注册、计数器 / 图标初始化及实际头部撞墙检测均正常，未发现 WallCue 相关报错；VR 中的视觉效果仍待实测。
 
 WallCue 是一个撞墙提示 Mod，适合 FitBeat 等需要频繁下蹲、侧闪的谱面。它提供墙框预警、撞墙计数和固定位置的碰撞图标，帮助你确认是否躲开了墙，尤其是很薄、经过很快的墙。
 
@@ -32,14 +34,14 @@ HUD 上分两行显示 `Wall Hits` 和本局撞墙数。每面墙首次发生实
 
 ## 安装与更新
 
-需要先安装适配 **Beat Saber 1.44.1** 的以下依赖：
+需要先安装适配 **Beat Saber 1.40.8** 的以下依赖：
 
 | 依赖 | 本版要求 |
 | --- | --- |
 | BSIPA | 4.3.6 起，4.x |
-| SiraUtil | 3.3.1 起，3.x |
-| BeatSaberMarkupLanguage（BSML） | 1.14.1 起，1.x |
-| Counters+ | 2.3.12 起，2.x；本版使用 2.3.12 测试 |
+| SiraUtil | 3.2.1 起，3.x；本版使用 3.2.1+bs.1.40.0 验证 |
+| BeatSaberMarkupLanguage（BSML） | 1.12.5 起，1.x；本版使用 1.12.5+bs.1.40.0 验证 |
+| Counters+ | 2.3.11 起，2.x；本版使用 2.3.11 验证 |
 
 版本号满足要求的同时，依赖本身也必须适配游戏版本。安装包不包含这些依赖。
 
@@ -48,7 +50,7 @@ HUD 上分两行显示 `Wall Hits` 和本局撞墙数。每面墙首次发生实
 3. 更新时覆盖旧文件，不要同时保留改名的旧版 DLL。
 4. 启动游戏，按下方说明调整设置。
 
-使用 BSManager 时，请放进 **1.44.1 对应实例** 的目录。图标已包含在 DLL 内，不需要另放图片，也不需要安装 HitScoreVisualizer 或 Enhancements。
+使用 BSManager 时，请放进 **1.40.8 对应实例** 的目录。图标已包含在 DLL 内，不需要另放图片，也不需要安装 HitScoreVisualizer 或 Enhancements。
 
 更新可保留原配置。卸载时退出游戏并移走 `Plugins/WallCue.dll` 即可。
 
@@ -96,10 +98,10 @@ HUD 上分两行显示 `Wall Hits` 和本局撞墙数。每面墙首次发生实
 
 | 谱面或模式 | 当前情况 |
 | --- | --- |
-| 普通谱 / FitBeat | 已实测墙框、计数、图标及设置功能 |
-| Mapping Extensions（ME）谱 | 已有谱面实测正常，更多特殊墙仍欢迎测试 |
-| Noodle Extensions（NE）谱 | **自动关闭墙框效果，保留计数和图标**；0.1.8 已实测正常 |
-| BSPlus 多人模式 | 已在测试者环境中实测正常 |
+| 普通谱 / FitBeat | 1.40.8 普通谱已通过初始化与实际撞墙日志检查；FitBeat 和 VR 视觉效果待实测，原 1.44.1 版已实测 |
+| Mapping Extensions（ME）谱 | 原 1.44.1 版已有谱面实测；1.40.8 待游戏内验证 |
+| Noodle Extensions（NE）谱 | **自动关闭墙框效果，保留计数和图标**；原 1.44.1 版已实测，1.40.8 待游戏内验证 |
+| BSPlus 多人模式 | 原 1.44.1 版已在测试者环境中实测；1.40.8 待游戏内验证 |
 | 其他多人实现、战役、教程、回放、其他游戏版本 | 尚未充分验证 |
 
 NE 谱的装饰墙或不可碰撞墙，不会仅因视觉上穿过头部就计数；只有游戏实际判定的碰撞才触发反馈。NE 谱关闭墙框效果是预期行为，切回普通谱会自动恢复。自动识别依赖谱面对当前难度的 NE 声明。
@@ -131,6 +133,15 @@ NE 谱的装饰墙或不可碰撞墙，不会仅因视觉上穿过头部就计�
 ## Development
 
 WallCue is currently under active development.
+
+This branch targets Beat Saber **1.40.8**. Build and run the checks against a patched installation with the dependencies listed above:
+
+```powershell
+python build.py --game "../../games/BeatSaber-1.40.8" --dotnet "../../tools/dotnet-sdk/dotnet.exe" --sdk-root "../../tools/dotnet-sdk/sdk/8.0.424"
+python tests/run.py --game "../../games/BeatSaber-1.40.8" --dotnet "../../tools/dotnet-sdk/dotnet.exe" --sdk-root "../../tools/dotnet-sdk/sdk/8.0.424"
+```
+
+The DLL is written to `out/WallCue.dll`. Integration checks use the actual game and plugin DLLs to verify private collision/rendering fields, dependency version ranges, Counters+ registration, BSML bindings, and the embedded icon. They do not exercise Unity rendering or VR gameplay.
 
 Bug reports, compatibility reports and pull requests are welcome.
 
