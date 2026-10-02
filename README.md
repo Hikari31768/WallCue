@@ -134,6 +134,12 @@ NE 谱的装饰墙或不可碰撞墙，不会仅因视觉上穿过头部就计�
 
 WallCue is currently under active development.
 
+Requirements:
+
+- .NET SDK 8+
+- Beat Saber PC 1.40.8
+- BSIPA, SiraUtil, BSML and Counters+ installed (see the versions above)
+
 This branch targets Beat Saber **1.40.8**. Build and run the checks against a patched installation with the dependencies listed above:
 
 ```powershell
@@ -151,3 +157,7 @@ When reporting an issue, please include:
 - Relevant mods
 - `_latest.log`
 - Steps to reproduce the issue
+
+## Author
+
+SD無 (GitHub: @neon28)

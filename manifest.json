@@ -1,7 +1,7 @@
 {
   "id": "WallCue",
   "name": "WallCue",
-  "author": "neon28 / Codex",
+  "author": "SD無 (neon28)",
   "version": "0.1.8",
   "gameVersion": "1.40.8",
   "description": "Wall warnings, a Wall Hits counter and a fixed-position collision icon. HUD positioning and switches are integrated into Counters+. Beat Saber PC 1.40.8 Solo/Party prototype.",
