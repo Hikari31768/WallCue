@@ -132,6 +132,13 @@ NE 谱的装饰墙或不可碰撞墙，不会仅因视觉上穿过头部就计�
 
 WallCue is currently under active development.
 
+Requirements:
+- .NET SDK 8+
+- Beat Saber PC 1.44.1
+- BSIPA, SiraUtil, BSML and Counters+ installed
+
+Build:
+python build.py --game "D:\Path\To\Beat Saber"
 Bug reports, compatibility reports and pull requests are welcome.
 
 When reporting an issue, please include:
