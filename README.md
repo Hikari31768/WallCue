@@ -147,3 +147,7 @@ When reporting an issue, please include:
 - Relevant mods
 - `_latest.log`
 - Steps to reproduce the issue
+
+## Author
+
+SD無 (GitHub: @neon28)
